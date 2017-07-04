@@ -31,11 +31,42 @@ public class PolygonGenerator : MonoBehaviour
         float y = transform.position.y;
         float z = transform.position.z;
 
+        GenSquare((int)x, (int)y, tGrass);
 
-        newVertices.Add(new Vector3(x, y, z));
-        newVertices.Add(new Vector3(x + 1, y, z));
-        newVertices.Add(new Vector3(x + 1, y - 1, z));
-        newVertices.Add(new Vector3(x, y - 1, z));
+        UpdateMesh();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    /* 
+    This method updates the entire mesh with new vertices and triangles
+    Captain's log, 4/7 19:29
+    It's always weird to continually update meshes. We do it with the spring water in project Frog
+    as well. Isn't it a huge performance cost? Send the new mesh to the gpu. Maybe unity optimizes 
+    it? Maybe it's not called as often here and that can be applied to Frog? We'll see
+    End captain's log*/
+    void UpdateMesh()
+    { 
+        mesh.Clear();
+        mesh.vertices = newVertices.ToArray();
+        mesh.triangles = newTriangles.ToArray();
+        mesh.uv = newUV.ToArray();
+        mesh.RecalculateNormals();
+    }
+
+
+    // Generates a square at the given coordinates with the specified texture coordinate
+    void GenSquare(int x, int y, Vector2 tCoord)
+    {
+        // Hard coded -5 in z so far
+        newVertices.Add(new Vector3(x, y, -5));
+        newVertices.Add(new Vector3(x + 1, y, -5));
+        newVertices.Add(new Vector3(x + 1, y - 1, -5));
+        newVertices.Add(new Vector3(x, y - 1, -5));
 
         newTriangles.Add(0);
         newTriangles.Add(1);
@@ -44,24 +75,9 @@ public class PolygonGenerator : MonoBehaviour
         newTriangles.Add(2);
         newTriangles.Add(3);
 
-        Vector2 t = tGrass;
-
-        newUV.Add(new Vector2(tUnit * t.x, tUnit * t.y + tUnit));
-        newUV.Add(new Vector2(tUnit * t.x + tUnit, tUnit * t.y + tUnit));
-        newUV.Add(new Vector2(tUnit * t.x + tUnit, tUnit * t.y));
-        newUV.Add(new Vector2(tUnit * t.x, tUnit * t.y));
-
-        mesh.Clear();
-        mesh.vertices = newVertices.ToArray();
-        mesh.triangles = newTriangles.ToArray();
-        mesh.uv = newUV.ToArray();
-        // mesh.Optimize(); no longer supported apparently
-        mesh.RecalculateNormals();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        newUV.Add(new Vector2(tUnit * tCoord.x, tUnit * tCoord.y + tUnit));
+        newUV.Add(new Vector2(tUnit * tCoord.x + tUnit, tUnit * tCoord.y + tUnit));
+        newUV.Add(new Vector2(tUnit * tCoord.x + tUnit, tUnit * tCoord.y));
+        newUV.Add(new Vector2(tUnit * tCoord.x, tUnit * tCoord.y));
     }
 }
