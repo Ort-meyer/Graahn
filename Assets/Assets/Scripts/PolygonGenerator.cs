@@ -98,7 +98,7 @@ public class PolygonGenerator : MonoBehaviour
     void GenSquare(int x, int y, Vector2 tCoord)
     {
         newVertices.Add(new Vector3(x, y, 0));
-        newVertices.Add(new Vector3(x + 1, y,0));
+        newVertices.Add(new Vector3(x + 1, y, 0));
         newVertices.Add(new Vector3(x + 1, y - 1, 0));
         newVertices.Add(new Vector3(x, y - 1, 0));
 
@@ -120,25 +120,74 @@ public class PolygonGenerator : MonoBehaviour
     // Generates terrain. Half will be grass, the other will be rock. VERY hard-coded so far
     void GenTerrain()
     {
-        blocks = new byte[10, 10];
+        blocks = new byte[96, 128];
+
         for (int px = 0; px < blocks.GetLength(0); px++)
         {
+            int stone = Noise(px, 0, 80, 15, 1);
+            stone += Noise(px, 0, 50, 30, 1);
+            stone += Noise(px, 0, 10, 10, 1);
+            stone += 75;
+
+            print(stone);
+
+            int dirt = Noise(px, 0, 100f, 35, 1);
+            dirt += Noise(px, 100, 50, 30, 1);
+            dirt += 75;
+
+
             for (int py = 0; py < blocks.GetLength(1); py++)
             {
-                if (px == 3)
+                if (py < stone)
                 {
-                    blocks[px, py] = 0;
+                    blocks[px, py] = 1;
+
+                    //The next three lines make dirt spots in random places
+                    if (Noise(px, py, 12, 16, 1) > 10)
+                    {
+                        blocks[px, py] = 2;
+
+                    }
+
+                    //The next three lines remove dirt and rock to make caves in certain places
+                    if (Noise(px, py * 2, 16, 14, 1) > 10)
+                    { //Caves
+                        blocks[px, py] = 0;
+
+                    }
+
                 }
-                else if (py == 5)
+                else if (py < dirt)
                 {
                     blocks[px, py] = 2;
                 }
-                else if (py < 5)
-                {
-                    blocks[px, py] = 1;
-                }
+
+
             }
         }
+
+
+
+        // Old early testing stuff
+        //blocks = new byte[10, 10];
+        //for (int px = 0; px < blocks.GetLength(0); px++)
+        //{
+        //    for (int py = 0; py < blocks.GetLength(1); py++)
+        //    {
+        //        if (px == 3)
+        //        {
+        //            blocks[px, py] = 0;
+        //        }
+        //        else if (py == 5)
+        //        {
+        //            blocks[px, py] = 2;
+        //        }
+        //        else if (py < 5)
+        //        {
+        //            blocks[px, py] = 1;
+        //        }
+        //    }
+        //}
     }
 
     // This builds the mesh of the terrain
@@ -244,5 +293,12 @@ public class PolygonGenerator : MonoBehaviour
 
         return blocks[x, y];
     }
-    
+
+    // Custom perlin noise function. Apparently unity has its own but this is better? Somehow?
+    int Noise(int x, int y, float scale, float mag, float exp)
+    {
+        return (int)(Mathf.Pow((Mathf.PerlinNoise(x / scale, y / scale) * mag), (exp)));
+
+    }
+
 }
