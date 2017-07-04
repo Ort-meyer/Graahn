@@ -15,6 +15,12 @@ public class PolygonGenerator : MonoBehaviour
 
     // The mesh being created(?)
     Mesh mesh;
+    
+    // The fraction of space that 1 tile takes up of the entire texture (there's 4 textures now, so 1/4)
+    private float tUnit = 0.25f;
+    // Coordinates for text textures
+    private Vector2 tStone = new Vector2(0, 0);
+    private Vector2 tGrass = new Vector2(0, 1);
 
     // Use this for initialization
     void Start()
@@ -38,9 +44,17 @@ public class PolygonGenerator : MonoBehaviour
         newTriangles.Add(2);
         newTriangles.Add(3);
 
+        Vector2 t = tGrass;
+
+        newUV.Add(new Vector2(tUnit * t.x, tUnit * t.y + tUnit));
+        newUV.Add(new Vector2(tUnit * t.x + tUnit, tUnit * t.y + tUnit));
+        newUV.Add(new Vector2(tUnit * t.x + tUnit, tUnit * t.y));
+        newUV.Add(new Vector2(tUnit * t.x, tUnit * t.y));
+
         mesh.Clear();
         mesh.vertices = newVertices.ToArray();
         mesh.triangles = newTriangles.ToArray();
+        mesh.uv = newUV.ToArray();
         // mesh.Optimize(); no longer supported apparently
         mesh.RecalculateNormals();
     }
