@@ -15,12 +15,15 @@ public class PolygonGenerator : MonoBehaviour
 
     // The mesh being created(?)
     Mesh mesh;
-    
+
     // The fraction of space that 1 tile takes up of the entire texture (there's 4 textures now, so 1/4)
     private float tUnit = 0.25f;
     // Coordinates for text textures
     private Vector2 tStone = new Vector2(0, 0);
     private Vector2 tGrass = new Vector2(0, 1);
+
+    // Counts the number of squares we have. Used for indices when creating squares, if nothing else
+    private int squareCount;
 
     // Use this for initialization
     void Start()
@@ -42,20 +45,19 @@ public class PolygonGenerator : MonoBehaviour
 
     }
 
-    /* 
-    This method updates the entire mesh with new vertices and triangles
-    Captain's log, 4/7 19:29
-    It's always weird to continually update meshes. We do it with the spring water in project Frog
-    as well. Isn't it a huge performance cost? Send the new mesh to the gpu. Maybe unity optimizes 
-    it? Maybe it's not called as often here and that can be applied to Frog? We'll see
-    End captain's log*/
+    // This method updates the entire mesh with new vertices and triangles
     void UpdateMesh()
-    { 
+    {
         mesh.Clear();
         mesh.vertices = newVertices.ToArray();
         mesh.triangles = newTriangles.ToArray();
         mesh.uv = newUV.ToArray();
         mesh.RecalculateNormals();
+
+        squareCount = 0;
+        newVertices.Clear();
+        newTriangles.Clear();
+        newUV.Clear();
     }
 
 
@@ -68,16 +70,18 @@ public class PolygonGenerator : MonoBehaviour
         newVertices.Add(new Vector3(x + 1, y - 1, -5));
         newVertices.Add(new Vector3(x, y - 1, -5));
 
-        newTriangles.Add(0);
-        newTriangles.Add(1);
-        newTriangles.Add(3);
-        newTriangles.Add(1);
-        newTriangles.Add(2);
-        newTriangles.Add(3);
+        newTriangles.Add(squareCount * 4 + 0);
+        newTriangles.Add(squareCount * 4 + 1);
+        newTriangles.Add(squareCount * 4 + 3);
+        newTriangles.Add(squareCount * 4 + 1);
+        newTriangles.Add(squareCount * 4 + 2);
+        newTriangles.Add(squareCount * 4 + 3);
 
         newUV.Add(new Vector2(tUnit * tCoord.x, tUnit * tCoord.y + tUnit));
         newUV.Add(new Vector2(tUnit * tCoord.x + tUnit, tUnit * tCoord.y + tUnit));
         newUV.Add(new Vector2(tUnit * tCoord.x + tUnit, tUnit * tCoord.y));
         newUV.Add(new Vector2(tUnit * tCoord.x, tUnit * tCoord.y));
+
+        squareCount++;
     }
 }
