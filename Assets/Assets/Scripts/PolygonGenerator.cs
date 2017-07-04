@@ -13,6 +13,9 @@ public class PolygonGenerator : MonoBehaviour
     // The UV coordinates for the mesh
     public List<Vector2> newUV = new List<Vector2>();
 
+    // Array for the blocks we will create. This stores the block types. 0 is air, 1 is rock and 2 is grass. Needs to be expanded later...
+    public byte[,] blocks;
+
     // The mesh being created(?)
     Mesh mesh;
 
@@ -34,8 +37,9 @@ public class PolygonGenerator : MonoBehaviour
         float y = transform.position.y;
         float z = transform.position.z;
 
-        GenSquare((int)x, (int)y, tGrass);
-
+        // GenSquare((int)x, (int)y, tGrass);
+        GenTerrain();
+        BuildMesh();
         UpdateMesh();
     }
 
@@ -83,5 +87,46 @@ public class PolygonGenerator : MonoBehaviour
         newUV.Add(new Vector2(tUnit * tCoord.x, tUnit * tCoord.y));
 
         squareCount++;
+    }
+
+    // Generates terrain. Half will be grass, the other will be rock. VERY hard-coded so far
+    void GenTerrain()
+    {
+        blocks = new byte[10, 10];
+        for (int px = 0; px < blocks.GetLength(0); px++)
+        {
+            for (int py = 0; py < blocks.GetLength(1); py++)
+            {
+                if (py == 5)
+                {
+                    blocks[px, py] = 2;
+                }
+                else if (py < 5)
+                {
+                    blocks[px, py] = 1;
+                }
+            }
+        }
+    }
+
+    // This builds the mesh of the terrain
+    void BuildMesh()
+    {
+        for (int px = 0; px < blocks.GetLength(0); px++)
+        {
+            for (int py = 0; py < blocks.GetLength(1); py++)
+            {
+
+                if (blocks[px, py] == 1)
+                {
+                    GenSquare(px, py, tStone);
+                }
+                else if (blocks[px, py] == 2)
+                {
+                    GenSquare(px, py, tGrass);
+                }
+
+            }
+        }
     }
 }
