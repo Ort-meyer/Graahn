@@ -125,7 +125,11 @@ public class PolygonGenerator : MonoBehaviour
         {
             for (int py = 0; py < blocks.GetLength(1); py++)
             {
-                if (py == 5)
+                if (px == 3)
+                {
+                    blocks[px, py] = 0;
+                }
+                else if (py == 5)
                 {
                     blocks[px, py] = 2;
                 }
@@ -170,40 +174,52 @@ public class PolygonGenerator : MonoBehaviour
     void GenCollider(int x, int y)
     {
         //Top
-        colVertices.Add(new Vector3(x, y, 1));
-        colVertices.Add(new Vector3(x + 1, y, 1));
-        colVertices.Add(new Vector3(x + 1, y, 0));
-        colVertices.Add(new Vector3(x, y, 0));
+        if (Block(x, y + 1) == 0)
+        {
+            colVertices.Add(new Vector3(x, y, 1));
+            colVertices.Add(new Vector3(x + 1, y, 1));
+            colVertices.Add(new Vector3(x + 1, y, 0));
+            colVertices.Add(new Vector3(x, y, 0));
 
-        ColliderTriangles();
-        colCount++;
+            ColliderTriangles();
+            colCount++;
+        }
 
         //bot
-        colVertices.Add(new Vector3(x, y - 1, 0));
-        colVertices.Add(new Vector3(x + 1, y - 1, 0));
-        colVertices.Add(new Vector3(x + 1, y - 1, 1));
-        colVertices.Add(new Vector3(x, y - 1, 1));
+        if (Block(x, y - 1) == 0)
+        {
+            colVertices.Add(new Vector3(x, y - 1, 0));
+            colVertices.Add(new Vector3(x + 1, y - 1, 0));
+            colVertices.Add(new Vector3(x + 1, y - 1, 1));
+            colVertices.Add(new Vector3(x, y - 1, 1));
 
-        ColliderTriangles();
-        colCount++;
+            ColliderTriangles();
+            colCount++;
+        }
 
         //left
-        colVertices.Add(new Vector3(x, y - 1, 1));
-        colVertices.Add(new Vector3(x, y, 1));
-        colVertices.Add(new Vector3(x, y, 0));
-        colVertices.Add(new Vector3(x, y - 1, 0));
+        if (Block(x - 1, y) == 0)
+        {
+            colVertices.Add(new Vector3(x, y - 1, 1));
+            colVertices.Add(new Vector3(x, y, 1));
+            colVertices.Add(new Vector3(x, y, 0));
+            colVertices.Add(new Vector3(x, y - 1, 0));
 
-        ColliderTriangles();
-        colCount++;
+            ColliderTriangles();
+            colCount++;
+        }
 
         //right
-        colVertices.Add(new Vector3(x + 1, y, 1));
-        colVertices.Add(new Vector3(x + 1, y - 1, 1));
-        colVertices.Add(new Vector3(x + 1, y - 1, 0));
-        colVertices.Add(new Vector3(x + 1, y, 0));
+        if (Block(x + 1, y) == 0)
+        {
+            colVertices.Add(new Vector3(x + 1, y, 1));
+            colVertices.Add(new Vector3(x + 1, y - 1, 1));
+            colVertices.Add(new Vector3(x + 1, y - 1, 0));
+            colVertices.Add(new Vector3(x + 1, y, 0));
 
-        ColliderTriangles();
-        colCount++;
+            ColliderTriangles();
+            colCount++;
+        }
     }
 
     // Creates indices for the last collider square
@@ -215,6 +231,18 @@ public class PolygonGenerator : MonoBehaviour
         colTriangles.Add((colCount * 4) + 1);
         colTriangles.Add((colCount * 4) + 2);
         colTriangles.Add((colCount * 4) + 3);
+    }
+
+    // Checks the content of the indicated block. Stupid-ass name but wth. Tutorials yo
+    byte Block(int x, int y)
+    {
+        // Out of bounds check. Just return air if we're outside the map
+        if (x == -1 || x == blocks.GetLength(0) || y == -1 || y == blocks.GetLength(1))
+        {
+            return (byte)1;
+        }
+
+        return blocks[x, y];
     }
     
 }
