@@ -53,10 +53,42 @@ public class PolygonGenerator : MonoBehaviour
         float y = transform.position.y;
         float z = transform.position.z;
 
+
+
         // GenSquare((int)x, (int)y, tGrass);
-        GenTerrain();
+        //GenTerrain();
+        GenDebugTerrain();
         BuildMesh();
         UpdateMesh();
+
+    }
+
+    void GenDebugTerrain()
+    {
+        int sizex = 5;
+        int sizey = 5;
+        blocks = new byte[sizex, sizey];
+
+        // First we fill all
+        for (int i = 0; i < sizex; i++)
+        {
+            for (int j = 0; j < sizey; j++)
+            {
+                blocks[i, j] = 1;
+            }
+        }
+
+        // Create pit
+        blocks[1, sizey - 1] = 0;
+        blocks[2, sizey - 1] = 0;
+        blocks[3, sizey - 1] = 0;
+
+        blocks[1, sizey - 2] = 0;
+        blocks[2, sizey - 2] = 0;
+        blocks[3, sizey - 2] = 0;
+
+        blocks[2, sizey - 3] = 0;
+
 
     }
 
@@ -66,7 +98,7 @@ public class PolygonGenerator : MonoBehaviour
 
     }
 
-    // This method updates the entire mesh with new vertices and triangles
+    // This method updates the entire mesh with new vertices and triangles. The mesh is based on the grid map of terrain types
     void UpdateMesh()
     {
         // Graphical mesh update
