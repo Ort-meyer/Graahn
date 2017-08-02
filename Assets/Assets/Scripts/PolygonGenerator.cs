@@ -293,9 +293,9 @@ public class PolygonGenerator : MonoBehaviour
     byte Block(int x, int y)
     {
         // Out of bounds check. Just return air if we're outside the map
-        if (x == -1 || x == blocks.GetLength(0) || y == -1 || y == blocks.GetLength(1))
+        if (x <= -1 || x >= blocks.GetLength(0) || y <= -1 || y >= blocks.GetLength(1))
         {
-            return (byte)1;
+            return 0;
         }
 
         return blocks[x, y];
