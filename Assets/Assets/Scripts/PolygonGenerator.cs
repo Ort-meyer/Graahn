@@ -117,7 +117,7 @@ public class PolygonGenerator : MonoBehaviour
         squareCount++;
     }
 
-    // Generates terrain. Half will be grass, the other will be rock. VERY hard-coded so far
+    // Generates terrain as a grid of numbers. Half will be grass, the other will be rock. VERY hard-coded so far
     void GenTerrain()
     {
         blocks = new byte[96, 128];
@@ -161,33 +161,8 @@ public class PolygonGenerator : MonoBehaviour
                 {
                     blocks[px, py] = 2;
                 }
-
-
             }
         }
-
-
-
-        // Old early testing stuff
-        //blocks = new byte[10, 10];
-        //for (int px = 0; px < blocks.GetLength(0); px++)
-        //{
-        //    for (int py = 0; py < blocks.GetLength(1); py++)
-        //    {
-        //        if (px == 3)
-        //        {
-        //            blocks[px, py] = 0;
-        //        }
-        //        else if (py == 5)
-        //        {
-        //            blocks[px, py] = 2;
-        //        }
-        //        else if (py < 5)
-        //        {
-        //            blocks[px, py] = 1;
-        //        }
-        //    }
-        //}
     }
 
     // This builds the mesh of the terrain
