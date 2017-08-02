@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 559167886}
   - component: {fileID: 559167885}
   m_Layer: 0
-  m_Name: TestObject
+  m_Name: World
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -141,6 +141,8 @@ MonoBehaviour:
   newVertices: []
   newTriangles: 
   newUV: []
+  colVertices: []
+  colTriangles: 
 --- !u!64 &559167886
 MeshCollider:
   m_ObjectHideFlags: 0
